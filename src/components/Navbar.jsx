@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { themes } from "../styles/ThemeStyles";
+import { themes, commonStyles } from "../styles/ThemeStyles";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -15,6 +15,34 @@ export default function Navbar() {
       navigate("/");
     } catch (error) {
       console.error("Logout Error:", error.message);
+    }
+  };
+
+  // Common nav link style
+  const navLinkStyle = {
+    color: currentTheme.colors.text,
+    fontSize: "1.1rem",
+    position: "relative",
+    padding: "8px 16px",
+  };
+
+  const addNavUnderline = (e) => {
+    const underline = document.createElement("div");
+    underline.style.position = "absolute";
+    underline.style.bottom = "0";
+    underline.style.left = "0";
+    underline.style.width = "100%";
+    underline.style.height = "3px";
+    underline.style.background = currentTheme.colors.secondaryAccent;
+    underline.style.borderRadius = "3px";
+    underline.className = "nav-underline";
+    e.currentTarget.appendChild(underline);
+  };
+
+  const removeNavUnderline = (e) => {
+    const underline = e.currentTarget.querySelector(".nav-underline");
+    if (underline) {
+      e.currentTarget.removeChild(underline);
     }
   };
 
@@ -51,30 +79,9 @@ export default function Navbar() {
               <Link
                 className="nav-link fw-bold"
                 to="/"
-                style={{
-                  color: currentTheme.colors.text,
-                  fontSize: "1.1rem",
-                  position: "relative",
-                  padding: "8px 16px",
-                }}
-                onMouseOver={(e) => {
-                  const underline = document.createElement("div");
-                  underline.style.position = "absolute";
-                  underline.style.bottom = "0";
-                  underline.style.left = "0";
-                  underline.style.width = "100%";
-                  underline.style.height = "3px";
-                  underline.style.background = currentTheme.colors.secondaryAccent;
-                  underline.style.borderRadius = "3px";
-                  underline.className = "nav-underline";
-                  e.currentTarget.appendChild(underline);
-                }}
-                onMouseOut={(e) => {
-                  const underline = e.currentTarget.querySelector(".nav-underline");
-                  if (underline) {
-                    e.currentTarget.removeChild(underline);
-                  }
-                }}
+                style={navLinkStyle}
+                onMouseOver={addNavUnderline}
+                onMouseOut={removeNavUnderline}
               >
                 Home
               </Link>
@@ -83,30 +90,9 @@ export default function Navbar() {
               <Link
                 className="nav-link fw-bold"
                 to="/create-quiz"
-                style={{
-                  color: currentTheme.colors.text,
-                  fontSize: "1.1rem",
-                  position: "relative",
-                  padding: "8px 16px",
-                }}
-                onMouseOver={(e) => {
-                  const underline = document.createElement("div");
-                  underline.style.position = "absolute";
-                  underline.style.bottom = "0";
-                  underline.style.left = "0";
-                  underline.style.width = "100%";
-                  underline.style.height = "3px";
-                  underline.style.background = currentTheme.colors.secondaryAccent;
-                  underline.style.borderRadius = "3px";
-                  underline.className = "nav-underline";
-                  e.currentTarget.appendChild(underline);
-                }}
-                onMouseOut={(e) => {
-                  const underline = e.currentTarget.querySelector(".nav-underline");
-                  if (underline) {
-                    e.currentTarget.removeChild(underline);
-                  }
-                }}
+                style={navLinkStyle}
+                onMouseOver={addNavUnderline}
+                onMouseOut={removeNavUnderline}
               >
                 Create Quiz
               </Link>
@@ -116,30 +102,9 @@ export default function Navbar() {
                 <Link
                   className="nav-link fw-bold"
                   to="/dashboard"
-                  style={{
-                    color: currentTheme.colors.text,
-                    fontSize: "1.1rem",
-                    position: "relative",
-                    padding: "8px 16px",
-                  }}
-                  onMouseOver={(e) => {
-                    const underline = document.createElement("div");
-                    underline.style.position = "absolute";
-                    underline.style.bottom = "0";
-                    underline.style.left = "0";
-                    underline.style.width = "100%";
-                    underline.style.height = "3px";
-                    underline.style.background = currentTheme.colors.secondaryAccent;
-                    underline.style.borderRadius = "3px";
-                    underline.className = "nav-underline";
-                    e.currentTarget.appendChild(underline);
-                  }}
-                  onMouseOut={(e) => {
-                    const underline = e.currentTarget.querySelector(".nav-underline");
-                    if (underline) {
-                      e.currentTarget.removeChild(underline);
-                    }
-                  }}
+                  style={navLinkStyle}
+                  onMouseOver={addNavUnderline}
+                  onMouseOut={removeNavUnderline}
                 >
                   Dashboard
                 </Link>
@@ -182,7 +147,7 @@ export default function Navbar() {
             onClick={toggleTheme}
             style={{
               color: theme === "light" ? "#FFFFFF" : "#2A1E3C",
-              border: "3px solid #000",
+              border: currentTheme.borders.input,
               borderRadius: "50%",
               width: "40px",
               height: "40px",
@@ -190,17 +155,11 @@ export default function Navbar() {
               justifyContent: "center",
               alignItems: "center",
               padding: "0",
-              boxShadow: "2px 2px 0px #000",
+              boxShadow: currentTheme.shadows.smallButton,
               transition: "transform 0.2s, box-shadow 0.2s",
             }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.transform = "translate(-1px, -1px)";
-              e.currentTarget.style.boxShadow = "3px 3px 0px #000";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.transform = "translate(0, 0)";
-              e.currentTarget.style.boxShadow = "2px 2px 0px #000";
-            }}
+            onMouseOver={commonStyles.smallButtonHoverEffect}
+            onMouseOut={commonStyles.smallButtonLeaveEffect}
           >
             {theme === "light" ? "🌙" : "☀️"}
           </button>

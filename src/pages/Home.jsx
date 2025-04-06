@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { themes } from "../styles/ThemeStyles";
+import { themes, getComponentStyles, commonStyles } from "../styles/ThemeStyles";
 import { getAllQuizzes } from "../models/quizModel";
 
 export default function Home() {
   const { user } = useAuth();
   const { theme } = useTheme();
   const currentTheme = themes[theme];
+  const styles = getComponentStyles(theme);
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,48 +31,35 @@ export default function Home() {
   return (
     <div 
       className="w-100 py-5 page-transition"
-      style={{
-        background: currentTheme.colors.background,
-        color: currentTheme.colors.text,
-        minHeight: "calc(100vh - 136px)", // Account for navbar and footer heights
-      }}
+      style={styles.pageContainer}
     >
       <div className="container">
         {/* Hero Section */}
         <section
           className="text-center p-5 mb-5 position-relative"
-          style={{
-            border: "4px solid #000",
-            borderRadius: "24px",
-            background: theme === "light" ? "#F7F2FF" : "#2A1E3C",
-            color: currentTheme.colors.text,
-            boxShadow: currentTheme.shadows.card,
-            overflow: "hidden",
-          }}
+          style={styles.headerCard}
         >
           {/* Decorative elements */}
           <div 
             className="position-absolute" 
             style={{ 
+              ...currentTheme.components.decorativeCircle,
               top: "20px", 
               right: "20px", 
               width: "60px", 
               height: "60px", 
-              borderRadius: "50%", 
               background: currentTheme.colors.primaryAccent,
-              zIndex: 1 
             }}
           ></div>
           <div 
             className="position-absolute" 
             style={{ 
+              ...currentTheme.components.decorativeCircle,
               bottom: "20px", 
               left: "20px", 
               width: "40px", 
               height: "40px", 
-              borderRadius: "50%", 
               background: currentTheme.colors.secondaryAccent,
-              zIndex: 1 
             }}
           ></div>
 
@@ -126,22 +114,9 @@ export default function Home() {
               <Link
                 to="/create-quiz"
                 className="btn btn-lg fw-bold px-4 py-2 page-transition"
-                style={{
-                  background: currentTheme.button.primary.background,
-                  color: currentTheme.button.primary.color,
-                  border: currentTheme.button.primary.border,
-                  borderRadius: "30px",
-                  boxShadow: "3px 3px 0px #000000",
-                  transition: "transform 0.2s, box-shadow 0.2s",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = "translate(-2px, -2px)";
-                  e.currentTarget.style.boxShadow = "5px 5px 0px #000000";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = "translate(0px, 0px)";
-                  e.currentTarget.style.boxShadow = "3px 3px 0px #000000";
-                }}
+                style={styles.primaryButton}
+                onMouseOver={commonStyles.buttonHoverEffect}
+                onMouseOut={commonStyles.buttonLeaveEffect}
               >
                 ✨ Create Quiz
               </Link>
@@ -166,24 +141,17 @@ export default function Home() {
           <div className="row g-4">
             <div className="col-md-4">
               <div style={{
-                background: theme === "light" ? "#F0E6FF" : "#3D305A",
-                border: "4px solid #000",
-                borderRadius: "20px",
-                padding: "25px 20px",
+                ...styles.purpleCard,
                 height: "100%",
-                boxShadow: currentTheme.shadows.card,
-                position: "relative",
-                overflow: "hidden",
               }}>
                 <div className="position-absolute" style={{
+                  ...currentTheme.components.decorativeCircle,
                   top: "15px",
                   right: "15px",
                   width: "50px",
                   height: "50px",
-                  borderRadius: "50%",
                   background: "#C2A9FA",
                   opacity: "0.5",
-                  zIndex: "1",
                 }}></div>
                 
                 <div className="position-relative" style={{ zIndex: "2" }}>
@@ -195,24 +163,17 @@ export default function Home() {
             
             <div className="col-md-4">
               <div style={{
-                background: theme === "light" ? "#FFE6F7" : "#4D2A50",
-                border: "4px solid #000",
-                borderRadius: "20px",
-                padding: "25px 20px",
+                ...styles.pinkCard,
                 height: "100%",
-                boxShadow: currentTheme.shadows.card,
-                position: "relative",
-                overflow: "hidden",
               }}>
                 <div className="position-absolute" style={{
+                  ...currentTheme.components.decorativeCircle,
                   bottom: "15px",
                   right: "15px",
                   width: "70px",
                   height: "70px",
-                  borderRadius: "50%",
                   background: "#FA74B6",
                   opacity: "0.4",
-                  zIndex: "1",
                 }}></div>
                 
                 <div className="position-relative" style={{ zIndex: "2" }}>
@@ -224,24 +185,17 @@ export default function Home() {
             
             <div className="col-md-4">
               <div style={{
-                background: theme === "light" ? "#FFF6D6" : "#4D4430",
-                border: "4px solid #000",
-                borderRadius: "20px",
-                padding: "25px 20px",
+                ...styles.yellowCard,
                 height: "100%",
-                boxShadow: currentTheme.shadows.card,
-                position: "relative",
-                overflow: "hidden",
               }}>
                 <div className="position-absolute" style={{
+                  ...currentTheme.components.decorativeCircle,
                   bottom: "45px",
                   left: "15px",
                   width: "40px",
                   height: "40px",
-                  borderRadius: "50%",
                   background: "#FFD44F",
                   opacity: "0.5",
-                  zIndex: "1",
                 }}></div>
                 
                 <div className="position-relative" style={{ zIndex: "2" }}>
@@ -271,30 +225,24 @@ export default function Home() {
                       background: theme === "light" ? "#FFFFFF" : "#3A2C50",
                       color: currentTheme.colors.text,
                       borderRadius: "16px",
-                      border: "4px solid #000",
+                      border: currentTheme.borders.standard,
                       boxShadow: currentTheme.shadows.card,
                       transition: "transform 0.2s, box-shadow 0.2s",
                       overflow: "hidden",
                       position: "relative",
                     }}
-                    onMouseOver={(e) => {
-                      e.currentTarget.style.transform = "translate(-3px, -3px)";
-                      e.currentTarget.style.boxShadow = "7px 7px 0px #000000";
-                    }}
-                    onMouseOut={(e) => {
-                      e.currentTarget.style.transform = "translate(0px, 0px)";
-                      e.currentTarget.style.boxShadow = currentTheme.shadows.card;
-                    }}
+                    onMouseOver={commonStyles.cardHoverEffect}
+                    onMouseOut={commonStyles.cardLeaveEffect}
                   >
                     {/* Decorative element */}
                     <div 
                       className="position-absolute" 
                       style={{ 
+                        ...currentTheme.components.decorativeCircle,
                         top: "-10px", 
                         right: "-10px", 
                         width: "50px", 
-                        height: "50px", 
-                        borderRadius: "50%", 
+                        height: "50px",
                         background: "#FFD44F",
                         opacity: "0.3",
                       }}
@@ -310,22 +258,12 @@ export default function Home() {
                           to={`/quiz/${quiz.id}`}
                           className="btn fw-semibold page-transition"
                           style={{
-                            background: currentTheme.button.primary.background,
-                            color: currentTheme.button.primary.color,
-                            border: "3px solid #000",
-                            borderRadius: "30px",
-                            boxShadow: "2px 2px 0px #000000",
+                            ...styles.primaryButton,
                             padding: "8px 20px",
-                            transition: "transform 0.2s, box-shadow 0.2s",
+                            boxShadow: currentTheme.shadows.smallButton,
                           }}
-                          onMouseOver={(e) => {
-                            e.currentTarget.style.transform = "translate(-2px, -2px)";
-                            e.currentTarget.style.boxShadow = "4px 4px 0px #000000";
-                          }}
-                          onMouseOut={(e) => {
-                            e.currentTarget.style.transform = "translate(0px, 0px)";
-                            e.currentTarget.style.boxShadow = "2px 2px 0px #000000";
-                          }}
+                          onMouseOver={commonStyles.smallButtonHoverEffect}
+                          onMouseOut={commonStyles.smallButtonLeaveEffect}
                         >
                           Take Quiz →
                         </Link>

@@ -4,19 +4,22 @@ import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../firebase/config";
-import { themes } from "../styles/ThemeStyles";
+import { themes, getComponentStyles, commonStyles } from "../styles/ThemeStyles";
 import { getRecentScoresForQuizzes } from "../models/quizModel";
 
 export default function Dashboard() {
   const { user } = useAuth();
   const { theme } = useTheme();
   const currentTheme = themes[theme];
+  const styles = getComponentStyles(theme);
   const [quizzes, setQuizzes] = useState([]);
   const [quizScores, setQuizScores] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserQuizzes = async () => {
+      if (!user) return;
+      
       try {
         const q = query(collection(db, "quizzes"), where("createdBy", "==", user.uid));
         const querySnapshot = await getDocs(q);
@@ -39,41 +42,29 @@ export default function Dashboard() {
       }
     };
 
-    if (user) {
-      fetchUserQuizzes();
-    }
+    fetchUserQuizzes();
   }, [user]);
 
   return (
     <div 
       className="w-100 py-5 page-transition"
-      style={{
-        background: currentTheme.colors.background,
-        color: currentTheme.colors.text,
-        minHeight: "calc(100vh - 136px)",
-      }}
+      style={styles.pageContainer}
     >
       <div className="container">
         {/* Header Section */}
         <section
           className="text-center p-4 mb-5 position-relative"
-          style={{
-            border: "4px solid #000",
-            borderRadius: "24px",
-            background: theme === "light" ? "#FFE6F7" : "#4D2A50",
-            boxShadow: currentTheme.shadows.card,
-            overflow: "hidden",
-          }}
+          style={styles.pinkCard}
         >
           {/* Decorative elements */}
           <div 
             className="position-absolute" 
             style={{ 
+              ...currentTheme.components.decorativeCircle,
               top: "20px", 
               right: "20px", 
               width: "50px", 
               height: "50px", 
-              borderRadius: "50%", 
               background: currentTheme.colors.secondaryAccent,
               opacity: "0.5",
               zIndex: 1 
@@ -82,11 +73,11 @@ export default function Dashboard() {
           <div 
             className="position-absolute" 
             style={{ 
+              ...currentTheme.components.decorativeCircle,
               bottom: "15px", 
               left: "15px", 
               width: "30px", 
               height: "30px", 
-              borderRadius: "50%", 
               background: currentTheme.colors.primaryAccent,
               opacity: "0.4",
               zIndex: 1 
@@ -123,22 +114,9 @@ export default function Dashboard() {
           <Link
             to="/create-quiz"
             className="btn btn-lg fw-bold px-4 py-2 page-transition"
-            style={{
-              background: currentTheme.button.primary.background,
-              color: currentTheme.button.primary.color,
-              border: currentTheme.button.primary.border,
-              borderRadius: "30px",
-              boxShadow: "3px 3px 0px #000000",
-              transition: "transform 0.2s, box-shadow 0.2s",
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.transform = "translate(-2px, -2px)";
-              e.currentTarget.style.boxShadow = "5px 5px 0px #000000";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.transform = "translate(0px, 0px)";
-              e.currentTarget.style.boxShadow = "3px 3px 0px #000000";
-            }}
+            style={styles.primaryButton}
+            onMouseOver={commonStyles.buttonHoverEffect}
+            onMouseOut={commonStyles.buttonLeaveEffect}
           >
             ✨ Create New Quiz
           </Link>
@@ -167,24 +145,14 @@ export default function Dashboard() {
           {loading ? (
             <div 
               className="p-4 text-center"
-              style={{
-                border: "4px solid #000",
-                borderRadius: "20px",
-                background: theme === "light" ? "#F0E6FF" : "#3D305A",
-                boxShadow: currentTheme.shadows.card,
-              }}
+              style={styles.purpleCard}
             >
               <p className="h5 mb-0">Loading your quizzes...</p>
             </div>
           ) : quizzes.length === 0 ? (
             <div 
               className="p-4 text-center"
-              style={{
-                border: "4px solid #000",
-                borderRadius: "20px",
-                background: theme === "light" ? "#F0E6FF" : "#3D305A",
-                boxShadow: currentTheme.shadows.card,
-              }}
+              style={styles.purpleCard}
             >
               <p className="h5 mb-3">You haven't created any quizzes yet.</p>
               <p>Start by creating your first quiz!</p>
@@ -199,30 +167,24 @@ export default function Dashboard() {
                       background: theme === "light" ? "#FFFFFF" : "#3A2C50",
                       color: currentTheme.colors.text,
                       borderRadius: "16px",
-                      border: "4px solid #000",
+                      border: currentTheme.borders.standard,
                       boxShadow: currentTheme.shadows.card,
                       transition: "transform 0.2s, box-shadow 0.2s",
                       overflow: "hidden",
                       position: "relative",
                     }}
-                    onMouseOver={(e) => {
-                      e.currentTarget.style.transform = "translate(-3px, -3px)";
-                      e.currentTarget.style.boxShadow = "7px 7px 0px #000000";
-                    }}
-                    onMouseOut={(e) => {
-                      e.currentTarget.style.transform = "translate(0px, 0px)";
-                      e.currentTarget.style.boxShadow = currentTheme.shadows.card;
-                    }}
+                    onMouseOver={commonStyles.cardHoverEffect}
+                    onMouseOut={commonStyles.cardLeaveEffect}
                   >
                     {/* Decorative elements */}
                     <div 
                       className="position-absolute" 
                       style={{ 
+                        ...currentTheme.components.decorativeCircle,
                         top: "-10px", 
                         right: "-10px", 
                         width: "40px", 
                         height: "40px", 
-                        borderRadius: "50%", 
                         background: "#C2A9FA",
                         opacity: "0.4",
                       }}
@@ -230,24 +192,15 @@ export default function Dashboard() {
                     
                     <div className="d-flex flex-column h-100">
                       <div className="d-flex align-items-center mb-2">
-                        <span 
-                          className="me-2 d-inline-block text-center"
-                          style={{
-                            background: currentTheme.colors.primaryAccent,
-                            color: "#000",
-                            width: "28px",
-                            height: "28px",
-                            lineHeight: "28px",
-                            borderRadius: "50%",
-                            fontWeight: "bold",
-                            border: "2px solid #000",
-                            flexShrink: 0,
-                          }}
-                        >
+                        <span style={styles.questionCounter}>
                           {idx+1}
                         </span>
                         <h5 className="fw-bold mb-0" style={{ flex: 1 }}>{quiz.title}</h5>
                       </div>
+                      
+                      <p className="mb-2">
+                        {quiz.description ? quiz.description : <em>No description available</em>}
+                      </p>
                       
                       {/* Recent Score Display */}
                       {quizScores[quiz.id] && (
@@ -255,7 +208,7 @@ export default function Dashboard() {
                           className="mb-2 d-flex align-items-center"
                           style={{
                             borderRadius: "12px",
-                            backgroundColor: theme === "light" ? "#F0E6FF" : "#3D305A",
+                            backgroundColor: currentTheme.colors.purpleBackground,
                             padding: "5px 10px",
                             marginLeft: "30px"
                           }}
@@ -266,8 +219,8 @@ export default function Dashboard() {
                               width: "30px",
                               height: "30px",
                               borderRadius: "50%",
-                              border: "2px solid #000",
-                              background: theme === "light" ? "#FFD44F" : "#FFD44F",
+                              border: currentTheme.borders.thin,
+                              background: currentTheme.colors.primaryAccent,
                               color: "#000",
                               display: "flex",
                               justifyContent: "center",
@@ -283,53 +236,22 @@ export default function Dashboard() {
                         </div>
                       )}
                       
-                      <p className="flex-grow-1">
-                        {quiz.description ? quiz.description : <em>No description available</em>}
-                      </p>
                       <div className="d-flex justify-content-between pt-3 mt-auto">
                         <Link
                           to={`/edit-quiz/${quiz.id}`}
                           className="btn fw-semibold"
-                          style={{
-                            background: theme === "light" ? "#F0E6FF" : "#3D305A",
-                            color: currentTheme.colors.text,
-                            border: "3px solid #000000",
-                            borderRadius: "30px",
-                            boxShadow: "2px 2px 0px #000000",
-                            padding: "6px 15px",
-                            transition: "transform 0.2s, box-shadow 0.2s",
-                          }}
-                          onMouseOver={(e) => {
-                            e.currentTarget.style.transform = "translate(-1px, -1px)";
-                            e.currentTarget.style.boxShadow = "3px 3px 0px #000000";
-                          }}
-                          onMouseOut={(e) => {
-                            e.currentTarget.style.transform = "translate(0px, 0px)";
-                            e.currentTarget.style.boxShadow = "2px 2px 0px #000000";
-                          }}
+                          style={styles.secondaryButton}
+                          onMouseOver={commonStyles.smallButtonHoverEffect}
+                          onMouseOut={commonStyles.smallButtonLeaveEffect}
                         >
                           ✏️ Edit
                         </Link>
                         <Link
                           to={`/quiz/${quiz.id}`}
                           className="btn fw-semibold"
-                          style={{
-                            background: currentTheme.button.primary.background,
-                            color: currentTheme.button.primary.color,
-                            border: "3px solid #000",
-                            borderRadius: "30px",
-                            boxShadow: "2px 2px 0px #000000",
-                            padding: "6px 15px",
-                            transition: "transform 0.2s, box-shadow 0.2s",
-                          }}
-                          onMouseOver={(e) => {
-                            e.currentTarget.style.transform = "translate(-1px, -1px)";
-                            e.currentTarget.style.boxShadow = "3px 3px 0px #000000";
-                          }}
-                          onMouseOut={(e) => {
-                            e.currentTarget.style.transform = "translate(0px, 0px)";
-                            e.currentTarget.style.boxShadow = "2px 2px 0px #000000";
-                          }}
+                          style={styles.primaryButton}
+                          onMouseOver={commonStyles.smallButtonHoverEffect}
+                          onMouseOut={commonStyles.smallButtonLeaveEffect}
                         >
                           👁️ View
                         </Link>

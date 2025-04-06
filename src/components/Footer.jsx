@@ -22,9 +22,9 @@ export default function Footer() {
             display: "inline-block",
             padding: "8px 25px",
             borderRadius: "30px",
-            background: theme === "light" ? "#F0E6FF" : "#3D305A",
-            border: "3px solid #000",
-            boxShadow: "2px 2px 0px #000",
+            background: theme === "light" ? currentTheme.colors.purpleBackground : currentTheme.colors.purpleBackground,
+            border: currentTheme.borders.standard,
+            boxShadow: currentTheme.shadows.smallButton,
             fontWeight: "bold",
           }}
         >
