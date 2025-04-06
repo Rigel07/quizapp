@@ -2,17 +2,12 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { db } from "../firebase/config";
-import {
-  doc,
-  getDoc,
-  collection,
-  getDocs,
-  updateDoc,
-  addDoc,
-  deleteDoc
-} from "firebase/firestore";
 import { themes } from "../styles/ThemeStyles";
+import { 
+  getQuizById, 
+  getQuestionsForQuiz, 
+  updateQuizWithQuestions 
+} from "../models/quizModel";
 
 export default function EditQuiz() {
   const { quizId } = useParams();
@@ -38,10 +33,8 @@ export default function EditQuiz() {
     const fetchQuiz = async () => {
       try {
         // Fetch quiz details
-        const quizRef = doc(db, "quizzes", quizId);
-        const quizSnap = await getDoc(quizRef);
-        if (quizSnap.exists()) {
-          const quizData = quizSnap.data();
+        const quizData = await getQuizById(quizId);
+        if (quizData) {
           setTitle(quizData.title);
           setDescription(quizData.description);
         } else {
@@ -50,12 +43,7 @@ export default function EditQuiz() {
         }
 
         // Fetch quiz questions from subcollection
-        const questionsRef = collection(db, `quizzes/${quizId}/questions`);
-        const questionsSnap = await getDocs(questionsRef);
-        const fetchedQuestions = questionsSnap.docs.map((qdoc) => ({
-          id: qdoc.id,
-          ...qdoc.data()
-        }));
+        const fetchedQuestions = await getQuestionsForQuiz(quizId);
         setQuestions(fetchedQuestions);
         setOriginalQuestions(fetchedQuestions);
       } catch (error) {
@@ -92,38 +80,7 @@ export default function EditQuiz() {
     }
 
     try {
-      // Update quiz document
-      const quizRef = doc(db, "quizzes", quizId);
-      await updateDoc(quizRef, {
-        title,
-        description,
-      });
-
-      // Loop through original questions to delete those that were removed
-      for (let origQ of originalQuestions) {
-        const exists = questions.some((q) => q.id === origQ.id);
-        if (!exists) {
-          // Delete question from Firestore if it was removed in UI
-          await deleteDoc(doc(db, `quizzes/${quizId}/questions`, origQ.id));
-        }
-      }
-
-      // Loop through current questions to update existing ones or add new ones
-      for (let q of questions) {
-        if (q.id) {
-          // Existing question: update it
-          const questionRef = doc(db, `quizzes/${quizId}/questions`, q.id);
-          await updateDoc(questionRef, {
-            question: q.question,
-            options: q.options,
-            answer: q.answer,
-          });
-        } else {
-          // New question: add it
-          await addDoc(collection(db, `quizzes/${quizId}/questions`), q);
-        }
-      }
-
+      await updateQuizWithQuestions(quizId, title, description, questions, originalQuestions);
       alert("Quiz updated successfully!");
       navigate(`/quiz/${quizId}`);
     } catch (error) {

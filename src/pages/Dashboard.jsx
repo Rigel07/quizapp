@@ -2,15 +2,17 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../firebase/config";
 import { themes } from "../styles/ThemeStyles";
+import { getRecentScoresForQuizzes } from "../models/quizModel";
 
 export default function Dashboard() {
   const { user } = useAuth();
   const { theme } = useTheme();
   const currentTheme = themes[theme];
   const [quizzes, setQuizzes] = useState([]);
+  const [quizScores, setQuizScores] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,6 +25,13 @@ export default function Dashboard() {
           ...doc.data()
         }));
         setQuizzes(userQuizzes);
+        
+        // Fetch recent scores using our model function
+        if (userQuizzes.length > 0) {
+          const quizIds = userQuizzes.map(quiz => quiz.id);
+          const scoreData = await getRecentScoresForQuizzes(quizIds, user.uid);
+          setQuizScores(scoreData);
+        }
       } catch (error) {
         console.error("Error fetching user quizzes:", error);
       } finally {
@@ -220,7 +229,7 @@ export default function Dashboard() {
                     ></div>
                     
                     <div className="d-flex flex-column h-100">
-                      <div className="d-flex align-items-center mb-3">
+                      <div className="d-flex align-items-center mb-2">
                         <span 
                           className="me-2 d-inline-block text-center"
                           style={{
@@ -239,6 +248,41 @@ export default function Dashboard() {
                         </span>
                         <h5 className="fw-bold mb-0" style={{ flex: 1 }}>{quiz.title}</h5>
                       </div>
+                      
+                      {/* Recent Score Display */}
+                      {quizScores[quiz.id] && (
+                        <div 
+                          className="mb-2 d-flex align-items-center"
+                          style={{
+                            borderRadius: "12px",
+                            backgroundColor: theme === "light" ? "#F0E6FF" : "#3D305A",
+                            padding: "5px 10px",
+                            marginLeft: "30px"
+                          }}
+                        >
+                          <span className="me-2" style={{ fontSize: "14px" }}>Last score:</span>
+                          <div 
+                            style={{
+                              width: "30px",
+                              height: "30px",
+                              borderRadius: "50%",
+                              border: "2px solid #000",
+                              background: theme === "light" ? "#FFD44F" : "#FFD44F",
+                              color: "#000",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              fontWeight: "bold",
+                              fontSize: "14px",
+                              marginRight: "5px"
+                            }}
+                          >
+                            {quizScores[quiz.id].score}
+                          </div>
+                          <span style={{ fontSize: "14px" }}>/ {quizScores[quiz.id].total}</span>
+                        </div>
+                      )}
+                      
                       <p className="flex-grow-1">
                         {quiz.description ? quiz.description : <em>No description available</em>}
                       </p>

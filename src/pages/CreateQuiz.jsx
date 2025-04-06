@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { db } from "../firebase/config";
-import { collection, addDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { themes } from "../styles/ThemeStyles";
+import { createQuizWithQuestions } from "../models/quizModel";
 
 export default function CreateQuiz() {
   const { user } = useAuth();
@@ -20,6 +19,7 @@ export default function CreateQuiz() {
     options: ["", "", "", ""],
     answer: ""
   });
+  const [isCreating, setIsCreating] = useState(false);
 
   const addQuestion = () => {
     if (newQuestion.question.trim() && newQuestion.answer.trim()) {
@@ -42,21 +42,23 @@ export default function CreateQuiz() {
     }
 
     try {
-      const quizRef = await addDoc(collection(db, "quizzes"), {
+      setIsCreating(true);
+      const quizData = {
         title,
         description,
-        createdBy: user.uid
-      });
+        createdBy: user.uid,
+        createdAt: new Date()
+      };
 
-      for (let q of questions) {
-        await addDoc(collection(db, `quizzes/${quizRef.id}/questions`), q);
-      }
+      const { quizId } = await createQuizWithQuestions(quizData, questions);
 
       alert("Quiz created successfully!");
-      navigate(`/quiz/${quizRef.id}`);
+      navigate(`/quiz/${quizId}`);
     } catch (error) {
       console.error("Error creating quiz:", error);
       alert("Failed to create quiz.");
+    } finally {
+      setIsCreating(false);
     }
   };
 
@@ -367,11 +369,16 @@ export default function CreateQuiz() {
           <button 
             className="btn btn-lg px-5 py-2" 
             onClick={createQuiz}
-            style={buttonPrimaryStyle}
+            disabled={isCreating}
+            style={{
+              ...buttonPrimaryStyle,
+              opacity: isCreating ? 0.7 : 1,
+              cursor: isCreating ? "not-allowed" : "pointer"
+            }}
             onMouseOver={buttonHoverHandler}
             onMouseOut={buttonLeaveHandler}
           >
-            ✨ Create Quiz
+            {isCreating ? "Creating..." : "✨ Create Quiz"}
           </button>
         </div>
       </div>

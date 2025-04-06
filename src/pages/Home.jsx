@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase/config";
 import { themes } from "../styles/ThemeStyles";
+import { getAllQuizzes } from "../models/quizModel";
 
 export default function Home() {
   const { user } = useAuth();
@@ -16,11 +15,7 @@ export default function Home() {
   useEffect(() => {
     const fetchQuizzes = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "quizzes"));
-        const quizzesData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
+        const quizzesData = await getAllQuizzes();
         setQuizzes(quizzesData);
       } catch (error) {
         console.error("Error fetching quizzes:", error);

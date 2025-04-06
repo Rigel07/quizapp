@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { db } from "../firebase/config";
-import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
 import { themes } from "../styles/ThemeStyles";
+import { getQuizById, getQuestionsForQuiz, saveQuizScore } from "../models/quizModel";
 
 export default function QuizPage() {
   const { quizId } = useParams();
   const { theme } = useTheme();
+  const { user } = useAuth();
   const currentTheme = themes[theme];
   
   const [quiz, setQuiz] = useState(null);
@@ -17,21 +18,18 @@ export default function QuizPage() {
   const [score, setScore] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [attempted, setAttempted] = useState({});
+  const [savingScore, setSavingScore] = useState(false);
 
   useEffect(() => {
     const fetchQuiz = async () => {
       try {
-        const quizRef = doc(db, "quizzes", quizId);
-        const quizSnap = await getDoc(quizRef);
-        if (quizSnap.exists()) {
-          setQuiz(quizSnap.data());
-
-          const questionsRef = collection(db, `quizzes/${quizId}/questions`);
-          const questionsSnap = await getDocs(questionsRef);
-          const questionList = questionsSnap.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
+        // Get quiz details
+        const quizData = await getQuizById(quizId);
+        if (quizData) {
+          setQuiz(quizData);
+          
+          // Get quiz questions
+          const questionList = await getQuestionsForQuiz(quizId);
           setQuestions(questionList);
         }
       } catch (error) {
@@ -49,14 +47,33 @@ export default function QuizPage() {
     setAttempted((prev) => ({ ...prev, [qId]: true }));
   };
 
-  const submitQuiz = () => {
+  const submitQuiz = async () => {
     let calculatedScore = 0;
     questions.forEach((q) => {
       if (answers[q.id] === q.answer) {
         calculatedScore++;
       }
     });
+    
     setScore(calculatedScore);
+    
+    // Save score to firestore if user is logged in
+    if (user) {
+      try {
+        setSavingScore(true);
+        await saveQuizScore({
+          quizId,
+          userId: user.uid,
+          score: calculatedScore,
+          total: questions.length,
+          quizTitle: quiz.title
+        });
+      } catch (error) {
+        console.error("Error saving score:", error);
+      } finally {
+        setSavingScore(false);
+      }
+    }
   };
 
   const navigateToQuestion = (index) => {
@@ -73,6 +90,13 @@ export default function QuizPage() {
     if (currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1);
     }
+  };
+
+  const resetQuiz = () => {
+    setAnswers({});
+    setScore(null);
+    setCurrentQuestion(0);
+    setAttempted({});
   };
 
   // Button styles
@@ -381,8 +405,9 @@ export default function QuizPage() {
                             style={buttonPrimaryStyle}
                             onMouseOver={buttonHoverHandler}
                             onMouseOut={buttonLeaveHandler}
+                            disabled={savingScore}
                           >
-                            ✨ Submit Quiz
+                            {savingScore ? "Submitting..." : "✨ Submit Quiz"}
                           </button>
                         ) : null
                       ) : (
@@ -440,6 +465,32 @@ export default function QuizPage() {
                             ? "Well done! You did great!" 
                             : "Good effort! Keep practicing!"}
                       </p>
+
+                      {/* Retry Quiz Button */}
+                      <button 
+                        className="btn btn-lg mt-3"
+                        onClick={resetQuiz}
+                        style={{
+                          background: theme === "light" ? "#F0E6FF" : "#3D305A",
+                          color: currentTheme.colors.text,
+                          border: "3px solid #000000",
+                          borderRadius: "30px",
+                          boxShadow: "3px 3px 0px #000000",
+                          transition: "transform 0.2s, box-shadow 0.2s",
+                          fontWeight: "bold",
+                          padding: "10px 24px",
+                        }}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.transform = "translate(-2px, -2px)";
+                          e.currentTarget.style.boxShadow = "5px 5px 0px #000000";
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.transform = "translate(0px, 0px)";
+                          e.currentTarget.style.boxShadow = "3px 3px 0px #000000";
+                        }}
+                      >
+                        🔄 Try Again
+                      </button>
                     </div>
                   </div>
                 )}
