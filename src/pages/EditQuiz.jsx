@@ -1,26 +1,74 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { db } from "../firebase/config";
-import { collection, addDoc } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
+import {
+  doc,
+  getDoc,
+  collection,
+  getDocs,
+  updateDoc,
+  addDoc,
+  deleteDoc
+} from "firebase/firestore";
 import { themes } from "../styles/ThemeStyles";
 
-export default function CreateQuiz() {
+export default function EditQuiz() {
+  const { quizId } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
   const { theme } = useTheme();
   const currentTheme = themes[theme];
-  
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState([]);
+  // Save the original questions fetched from Firestore
+  const [originalQuestions, setOriginalQuestions] = useState([]);
   const [newQuestion, setNewQuestion] = useState({
     question: "",
     options: ["", "", "", ""],
     answer: ""
   });
+  const [loading, setLoading] = useState(true);
 
+  // Fetch quiz data and questions on mount
+  useEffect(() => {
+    const fetchQuiz = async () => {
+      try {
+        // Fetch quiz details
+        const quizRef = doc(db, "quizzes", quizId);
+        const quizSnap = await getDoc(quizRef);
+        if (quizSnap.exists()) {
+          const quizData = quizSnap.data();
+          setTitle(quizData.title);
+          setDescription(quizData.description);
+        } else {
+          alert("Quiz not found.");
+          navigate("/");
+        }
+
+        // Fetch quiz questions from subcollection
+        const questionsRef = collection(db, `quizzes/${quizId}/questions`);
+        const questionsSnap = await getDocs(questionsRef);
+        const fetchedQuestions = questionsSnap.docs.map((qdoc) => ({
+          id: qdoc.id,
+          ...qdoc.data()
+        }));
+        setQuestions(fetchedQuestions);
+        setOriginalQuestions(fetchedQuestions);
+      } catch (error) {
+        console.error("Error fetching quiz:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuiz();
+  }, [quizId, navigate]);
+
+  // Add new question to the list
   const addQuestion = () => {
     if (newQuestion.question.trim() && newQuestion.answer.trim()) {
       setQuestions([...questions, newQuestion]);
@@ -30,33 +78,57 @@ export default function CreateQuiz() {
     }
   };
 
+  // Delete a question from the list (UI only)
   const deleteQuestion = (index) => {
     const updatedQuestions = questions.filter((_, idx) => idx !== index);
     setQuestions(updatedQuestions);
   };
 
-  const createQuiz = async () => {
+  // Update quiz and questions in Firestore, and delete removed questions
+  const updateQuiz = async () => {
     if (!title.trim() || questions.length === 0) {
-      alert("Please fill all fields and add at least one question.");
+      alert("Please fill in the title and add at least one question.");
       return;
     }
 
     try {
-      const quizRef = await addDoc(collection(db, "quizzes"), {
+      // Update quiz document
+      const quizRef = doc(db, "quizzes", quizId);
+      await updateDoc(quizRef, {
         title,
         description,
-        createdBy: user.uid
       });
 
-      for (let q of questions) {
-        await addDoc(collection(db, `quizzes/${quizRef.id}/questions`), q);
+      // Loop through original questions to delete those that were removed
+      for (let origQ of originalQuestions) {
+        const exists = questions.some((q) => q.id === origQ.id);
+        if (!exists) {
+          // Delete question from Firestore if it was removed in UI
+          await deleteDoc(doc(db, `quizzes/${quizId}/questions`, origQ.id));
+        }
       }
 
-      alert("Quiz created successfully!");
-      navigate(`/quiz/${quizRef.id}`);
+      // Loop through current questions to update existing ones or add new ones
+      for (let q of questions) {
+        if (q.id) {
+          // Existing question: update it
+          const questionRef = doc(db, `quizzes/${quizId}/questions`, q.id);
+          await updateDoc(questionRef, {
+            question: q.question,
+            options: q.options,
+            answer: q.answer,
+          });
+        } else {
+          // New question: add it
+          await addDoc(collection(db, `quizzes/${quizId}/questions`), q);
+        }
+      }
+
+      alert("Quiz updated successfully!");
+      navigate(`/quiz/${quizId}`);
     } catch (error) {
-      console.error("Error creating quiz:", error);
-      alert("Failed to create quiz.");
+      console.error("Error updating quiz:", error);
+      alert("Failed to update quiz.");
     }
   };
 
@@ -88,6 +160,16 @@ export default function CreateQuiz() {
     fontWeight: "bold",
   };
 
+  const buttonDangerStyle = {
+    background: theme === "light" ? "#FFE6E6" : "#5A3030",
+    color: currentTheme.colors.text,
+    border: "2px solid #000000",
+    borderRadius: "20px",
+    boxShadow: "2px 2px 0px #000000",
+    transition: "transform 0.2s, box-shadow 0.2s",
+    fontWeight: "bold",
+  };
+
   const buttonHoverHandler = (e) => {
     e.currentTarget.style.transform = "translate(-2px, -2px)";
     e.currentTarget.style.boxShadow = "5px 5px 0px #000000";
@@ -97,6 +179,33 @@ export default function CreateQuiz() {
     e.currentTarget.style.transform = "translate(0px, 0px)";
     e.currentTarget.style.boxShadow = "3px 3px 0px #000000";
   };
+
+  if (loading) {
+    return (
+      <div 
+        className="w-100 py-5 page-transition"
+        style={{
+          background: currentTheme.colors.background,
+          color: currentTheme.colors.text,
+          minHeight: "calc(100vh - 136px)",
+        }}
+      >
+        <div className="container">
+          <div 
+            className="p-4 text-center"
+            style={{
+              border: "4px solid #000",
+              borderRadius: "20px",
+              background: theme === "light" ? "#F0E6FF" : "#3D305A",
+              boxShadow: currentTheme.shadows.card,
+            }}
+          >
+            <p className="h5 mb-0">Loading quiz data...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div 
@@ -108,8 +217,9 @@ export default function CreateQuiz() {
       }}
     >
       <div className="container">
-        <div 
-          className="text-center p-4 mb-4 position-relative"
+        {/* Header Section */}
+        <section
+          className="text-center p-4 mb-5 position-relative"
           style={{
             border: "4px solid #000",
             borderRadius: "24px",
@@ -122,8 +232,8 @@ export default function CreateQuiz() {
           <div 
             className="position-absolute" 
             style={{ 
-              top: "15px", 
-              right: "15px", 
+              top: "20px", 
+              right: "20px", 
               width: "50px", 
               height: "50px", 
               borderRadius: "50%", 
@@ -148,7 +258,7 @@ export default function CreateQuiz() {
 
           <div className="position-relative" style={{ zIndex: 2 }}>
             <h1 className="display-5 fw-bold mb-2">
-              Create a 
+              Edit 
               <span style={{ 
                 color: currentTheme.colors.secondaryAccent, 
                 fontStyle: "italic",
@@ -156,7 +266,7 @@ export default function CreateQuiz() {
                 marginLeft: "10px",
                 position: "relative",
               }}>
-                New Quiz
+                Your Quiz
                 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="8" viewBox="0 0 100 8" fill="none" style={{
                   position: "absolute",
                   bottom: "-5px",
@@ -167,10 +277,10 @@ export default function CreateQuiz() {
                 </svg>
               </span>
             </h1>
-            <p className="lead mb-0">Design exciting questions to challenge quiz takers!</p>
+            <p className="lead mb-0">Update your quiz details and questions!</p>
           </div>
-        </div>
-        
+        </section>
+
         {/* Quiz Details Section */}
         <div 
           className="p-4 mb-4 position-relative"
@@ -229,7 +339,7 @@ export default function CreateQuiz() {
           ></div>
 
           <div className="position-relative" style={{ zIndex: 2 }}>
-            <h4 className="fw-bold mb-3">Add Questions</h4>
+            <h4 className="fw-bold mb-3">Add New Question</h4>
             
             <input
               type="text"
@@ -247,7 +357,7 @@ export default function CreateQuiz() {
                 <div key={index} className="col-md-6">
                   <input
                     type="text"
-                    className="form-control"
+                    className="form-control mb-2"
                     placeholder={`Option ${index + 1}`}
                     value={option}
                     onChange={(e) => {
@@ -284,7 +394,7 @@ export default function CreateQuiz() {
           </div>
         </div>
 
-        {/* Display Added Questions */}
+        {/* Display Existing Questions */}
         <div 
           className="p-4 mb-4"
           style={{
@@ -294,7 +404,7 @@ export default function CreateQuiz() {
             boxShadow: currentTheme.shadows.card,
           }}
         >
-          <h4 className="fw-bold mb-3">Added Questions</h4>
+          <h4 className="fw-bold mb-3">Existing Questions</h4>
           
           {questions.length === 0 ? (
             <p className="text-center p-4 fst-italic">No questions added yet.</p>
@@ -302,7 +412,7 @@ export default function CreateQuiz() {
             <div className="list-group">
               {questions.map((q, idx) => (
                 <div 
-                  key={idx} 
+                  key={q.id ? q.id : idx} 
                   className="mb-3 p-3 d-flex justify-content-between align-items-start"
                   style={{
                     border: "3px solid #000",
@@ -347,12 +457,7 @@ export default function CreateQuiz() {
                   <button 
                     className="btn btn-sm" 
                     onClick={() => deleteQuestion(idx)}
-                    style={{
-                      background: theme === "light" ? "#FFE6E6" : "#5A3030",
-                      border: "2px solid #000",
-                      borderRadius: "20px",
-                      color: currentTheme.colors.text,
-                    }}
+                    style={buttonDangerStyle}
                   >
                     ✕ Delete
                   </button>
@@ -362,16 +467,16 @@ export default function CreateQuiz() {
           )}
         </div>
 
-        {/* Create Quiz Button */}
-        <div className="text-center">
+        {/* Update Quiz Button */}
+        <div className="text-center mb-5">
           <button 
             className="btn btn-lg px-5 py-2" 
-            onClick={createQuiz}
+            onClick={updateQuiz}
             style={buttonPrimaryStyle}
             onMouseOver={buttonHoverHandler}
             onMouseOut={buttonLeaveHandler}
           >
-            ✨ Create Quiz
+            ✨ Update Quiz
           </button>
         </div>
       </div>
