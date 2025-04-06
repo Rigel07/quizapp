@@ -7,6 +7,7 @@ import QuizPage from "./pages/QuizPage";
 import CreateQuiz from "./pages/CreateQuiz";
 import Dashboard from "./pages/Dashboard";
 import EditQuiz from "./pages/EditQuiz";
+import NotFound from "./pages/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
@@ -36,6 +37,8 @@ function App() {
             <Dashboard />
           </PrivateRoute>
         } />
+        {/* Catch-all route for non-existent paths */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </>
