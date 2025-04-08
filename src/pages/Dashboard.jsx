@@ -205,12 +205,11 @@ export default function Dashboard() {
                       {/* Recent Score Display */}
                       {quizScores[quiz.id] && (
                         <div 
-                          className="mb-2 d-flex align-items-center"
+                          className="d-flex align-items-center"
                           style={{
                             borderRadius: "12px",
                             backgroundColor: currentTheme.colors.purpleBackground,
                             padding: "5px 10px",
-                            marginLeft: "30px"
                           }}
                         >
                           <span className="me-2" style={{ fontSize: "14px" }}>Last score:</span>
