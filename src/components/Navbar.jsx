@@ -1,13 +1,14 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { themes, commonStyles } from "../styles/ThemeStyles";
+import styles from "../styles/Navbar.module.css";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
-  const currentTheme = themes[theme];
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -18,93 +19,63 @@ export default function Navbar() {
     }
   };
 
-  // Common nav link style
-  const navLinkStyle = {
-    color: currentTheme.colors.text,
-    fontSize: "1.1rem",
-    position: "relative",
-    padding: "8px 16px",
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const addNavUnderline = (e) => {
-    const underline = document.createElement("div");
-    underline.style.position = "absolute";
-    underline.style.bottom = "0";
-    underline.style.left = "0";
-    underline.style.width = "100%";
-    underline.style.height = "3px";
-    underline.style.background = currentTheme.colors.secondaryAccent;
-    underline.style.borderRadius = "3px";
-    underline.className = "nav-underline";
-    e.currentTarget.appendChild(underline);
-  };
-
-  const removeNavUnderline = (e) => {
-    const underline = e.currentTarget.querySelector(".nav-underline");
-    if (underline) {
-      e.currentTarget.removeChild(underline);
-    }
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
   };
 
   return (
-    <nav
-      style={{
-        background: currentTheme.colors.background,
-        borderBottom: "4px solid #000",
-        padding: "15px 0",
-      }}
-    >
-      <div className="container d-flex justify-content-between align-items-center">
+    <nav className={styles.navbar}>
+      <div className={`${styles.container} container`}>
         {/* Left: Brand */}
         <div className="d-flex align-items-center">
           <Link
-            className="navbar-brand"
+            className={styles.brand}
             to="/"
-            style={{ 
-              fontFamily: "'Coda', cursive", 
-              fontSize: "1.8rem",
-              fontWeight: "bold",
-              color: currentTheme.colors.text,
-              marginRight: "20px"
-            }}
+            onClick={closeMobileMenu}
           >
             Quiz App
           </Link>
         </div>
 
-        {/* Center: Navigation Links */}
-        <div className="d-none d-lg-flex justify-content-center">
-          <ul className="navbar-nav d-flex flex-row">
-            <li className="nav-item mx-2">
+        {/* Mobile Burger Menu Button */}
+        <button 
+          className={styles.mobileMenuToggle}
+          onClick={toggleMobileMenu}
+          aria-label="Toggle mobile menu"
+        >
+          <span className={`${styles.burgerLine} ${isMobileMenuOpen ? styles.burgerLineOpen1 : ''}`}></span>
+          <span className={`${styles.burgerLine} ${isMobileMenuOpen ? styles.burgerLineOpen2 : ''}`}></span>
+          <span className={`${styles.burgerLine} ${isMobileMenuOpen ? styles.burgerLineOpen3 : ''}`}></span>
+        </button>
+
+        {/* Desktop: Center Navigation Links */}
+        <div className={styles.navCenter}>
+          <ul className={styles.navList}>
+            <li className={styles.navItem}>
               <Link
-                className="nav-link fw-bold"
+                className={styles.navLink}
                 to="/"
-                style={navLinkStyle}
-                onMouseOver={addNavUnderline}
-                onMouseOut={removeNavUnderline}
               >
                 Home
               </Link>
             </li>
-            <li className="nav-item mx-2">
+            <li className={styles.navItem}>
               <Link
-                className="nav-link fw-bold"
+                className={styles.navLink}
                 to="/create-quiz"
-                style={navLinkStyle}
-                onMouseOver={addNavUnderline}
-                onMouseOut={removeNavUnderline}
               >
                 Create Quiz
               </Link>
             </li>
             {user && (
-              <li className="nav-item mx-2">
+              <li className={styles.navItem}>
                 <Link
-                  className="nav-link fw-bold"
+                  className={styles.navLink}
                   to="/dashboard"
-                  style={navLinkStyle}
-                  onMouseOver={addNavUnderline}
-                  onMouseOut={removeNavUnderline}
                 >
                   Dashboard
                 </Link>
@@ -113,56 +84,98 @@ export default function Navbar() {
           </ul>
         </div>
 
-        {/* Right: Logout & Theme Toggle */}
-        <div className="d-flex align-items-center">
+        {/* Desktop: Right Section */}
+        <div className={styles.rightSection}>
           {user ? (
             <button
-              className="btn fw-bold me-3"
+              className={styles.authButton}
               onClick={handleLogout}
-              style={{
-                color: currentTheme.colors.text,
-                background: "transparent",
-                border: "none",
-                fontSize: "1.1rem",
-              }}
             >
               Logout
             </button>
           ) : (
             <Link
-              className="btn fw-bold me-3"
+              className={styles.authButton}
               to="/auth"
-              style={{
-                color: currentTheme.colors.text,
-                background: "transparent",
-                border: "none",
-                fontSize: "1.1rem",
-              }}
             >
               Login
             </Link>
           )}
           <button
-            className="btn ms-2"
+            className={styles.themeToggle}
             onClick={toggleTheme}
-            style={{
-              color: theme === "light" ? "#FFFFFF" : "#2A1E3C",
-              border: currentTheme.borders.input,
-              borderRadius: "50%",
-              width: "40px",
-              height: "40px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              padding: "0",
-              boxShadow: currentTheme.shadows.smallButton,
-              transition: "transform 0.2s, box-shadow 0.2s",
-            }}
-            onMouseOver={commonStyles.smallButtonHoverEffect}
-            onMouseOut={commonStyles.smallButtonLeaveEffect}
           >
             {theme === "light" ? "🌙" : "☀️"}
           </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      <div className={`${styles.mobileMenu} ${isMobileMenuOpen ? styles.mobileMenuOpen : ''}`}>
+        <div className={styles.mobileMenuContent}>
+          <ul className={styles.mobileNavList}>
+            <li className={styles.mobileNavItem}>
+              <Link
+                className={styles.mobileNavLink}
+                to="/"
+                onClick={closeMobileMenu}
+              >
+                Home
+              </Link>
+            </li>
+            <li className={styles.mobileNavItem}>
+              <Link
+                className={styles.mobileNavLink}
+                to="/create-quiz"
+                onClick={closeMobileMenu}
+              >
+                Create Quiz
+              </Link>
+            </li>
+            {user && (
+              <li className={styles.mobileNavItem}>
+                <Link
+                  className={styles.mobileNavLink}
+                  to="/dashboard"
+                  onClick={closeMobileMenu}
+                >
+                  Dashboard
+                </Link>
+              </li>
+            )}
+            <li className={styles.mobileNavItem}>
+              {user ? (
+                <button
+                  className={styles.mobileAuthButton}
+                  onClick={() => {
+                    handleLogout();
+                    closeMobileMenu();
+                  }}
+                >
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  className={styles.mobileAuthButton}
+                  to="/auth"
+                  onClick={closeMobileMenu}
+                >
+                  Login
+                </Link>
+              )}
+            </li>
+            <li className={styles.mobileNavItem}>
+              <button
+                className={styles.mobileThemeToggle}
+                onClick={() => {
+                  toggleTheme();
+                  closeMobileMenu();
+                }}
+              >
+                {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
     </nav>

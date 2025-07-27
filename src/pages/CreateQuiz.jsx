@@ -2,15 +2,13 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
-import { themes, getComponentStyles, commonStyles } from "../styles/ThemeStyles";
 import { createQuizWithQuestions } from "../models/quizModel";
+import styles from "../styles/CreateQuiz.module.css";
 
 export default function CreateQuiz() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const currentTheme = themes[theme];
-  const styles = getComponentStyles(theme);
   
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -64,132 +62,82 @@ export default function CreateQuiz() {
   };
 
   return (
-    <div 
-      className="w-100 py-5 page-transition"
-      style={styles.pageContainer}
-    >
+    <div className={styles.pageContainer}>
       <div className="container">
-        <div 
-          className="text-center p-4 mb-4 position-relative"
-          style={styles.headerCard}
-        >
+        <div className={styles.mainCard}>
           {/* Decorative elements */}
-          <div 
-            className="position-absolute" 
-            style={{ 
-              ...currentTheme.components.decorativeCircle,
-              top: "15px", 
-              right: "15px", 
-              width: "50px", 
-              height: "50px", 
-              background: currentTheme.colors.secondaryAccent,
-              opacity: "0.5",
-              zIndex: 1 
-            }}
-          ></div>
-          <div 
-            className="position-absolute" 
-            style={{ 
-              ...currentTheme.components.decorativeCircle,
-              bottom: "15px", 
-              left: "15px", 
-              width: "30px", 
-              height: "30px", 
-              background: currentTheme.colors.primaryAccent,
-              opacity: "0.4",
-              zIndex: 1 
-            }}
-          ></div>
+          <div className={`${styles.decorativeCircle} ${styles.mainCardDecorative1}`}></div>
+          <div className={`${styles.decorativeCircle} ${styles.mainCardDecorative2}`}></div>
 
-          <div className="position-relative" style={{ zIndex: 2 }}>
-            <h1 className="display-5 fw-bold mb-2">
-              Create a 
-              <span style={{ 
-                color: currentTheme.colors.secondaryAccent, 
-                fontStyle: "italic",
-                display: "inline",
-                marginLeft: "10px",
-                position: "relative",
-              }}>
+          <div className={styles.cardContent}>
+            <h1 className={styles.pageTitle}>
+              Create a&nbsp;
+              <span className={styles.pageTitleAccent}>
                 New Quiz
-                <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="8" viewBox="0 0 100 8" fill="none" style={{
-                  position: "absolute",
-                  bottom: "-5px",
-                  left: "0",
-                  right: "0",
-                }}>
-                  <path d="M0 4C25 0 75 8 100 4" stroke={currentTheme.colors.secondaryAccent} strokeWidth="3" strokeLinecap="round"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="8" viewBox="0 0 100 8" fill="none" className={styles.titleUnderline}>
+                  <path d="M0 4C25 0 75 8 100 4" stroke="var(--color-secondary-accent)" strokeWidth="3" strokeLinecap="round"/>
                 </svg>
               </span>
             </h1>
-            <p className="lead mb-0">Design exciting questions to challenge quiz takers!</p>
+            <p className={`${styles.marginBottom2} ${styles.textCenter} lead`}>Design exciting questions to challenge quiz takers!</p>
           </div>
         </div>
         
         {/* Quiz Details Section */}
-        <div 
-          className="p-4 mb-4 position-relative"
-          style={styles.pinkCard}
-        >
-          <h4 className="fw-bold mb-3">Quiz Details</h4>
-          
-          <input
-            type="text"
-            className="form-control my-3"
-            placeholder="Quiz Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            style={styles.input}
-          />
-          <textarea
-            className="form-control my-3"
-            placeholder="Quiz Description (optional)"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            style={{...styles.input, minHeight: "100px"}}
-          ></textarea>
+        <div className={styles.mainCard}>
+          <div className={styles.cardContent}>
+            <h4 className={styles.sectionTitle}>Quiz Details</h4>
+            
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Quiz Title *</label>
+              <input
+                type="text"
+                className={styles.formInput}
+                placeholder="Enter your quiz title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+              />
+            </div>
+            
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Description (Optional)</label>
+              <textarea
+                className={styles.formTextarea}
+                placeholder="Describe what your quiz is about"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              ></textarea>
+            </div>
+          </div>
         </div>
 
         {/* Add Questions Section */}
-        <div 
-          className="p-4 mb-4 position-relative"
-          style={styles.purpleCard}
-        >
-          <div 
-            className="position-absolute" 
-            style={{ 
-              ...currentTheme.components.decorativeCircle,
-              top: "20px", 
-              right: "20px", 
-              width: "40px", 
-              height: "40px", 
-              background: "#C2A9FA",
-              opacity: "0.5",
-              zIndex: 1 
-            }}
-          ></div>
-
-          <div className="position-relative" style={{ zIndex: 2 }}>
-            <h4 className="fw-bold mb-3">Add Questions</h4>
+        <div className={styles.mainCard}>
+          <div className={styles.cardContent}>
+            <h4 className={styles.sectionTitle}>Add Questions</h4>
             
-            <input
-              type="text"
-              className="form-control my-3"
-              placeholder="Question"
-              value={newQuestion.question}
-              onChange={(e) =>
-                setNewQuestion({ ...newQuestion, question: e.target.value })
-              }
-              style={styles.input}
-            />
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Question *</label>
+              <input
+                type="text"
+                className={styles.formInput}
+                placeholder="Enter your question"
+                value={newQuestion.question}
+                onChange={(e) =>
+                  setNewQuestion({ ...newQuestion, question: e.target.value })
+                }
+              />
+            </div>
             
-            <div className="row g-2">
-              {newQuestion.options.map((option, index) => (
-                <div key={index} className="col-md-6">
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Answer Options</label>
+              <div className={styles.optionsGrid}>
+                {newQuestion.options.map((option, index) => (
                   <input
+                    key={index}
                     type="text"
-                    className="form-control"
+                    className={styles.smallFormInput}
                     placeholder={`Option ${index + 1}`}
                     value={option}
                     onChange={(e) => {
@@ -197,29 +145,27 @@ export default function CreateQuiz() {
                       opts[index] = e.target.value;
                       setNewQuestion({ ...newQuestion, options: opts });
                     }}
-                    style={styles.input}
                   />
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
             
-            <input
-              type="text"
-              className="form-control my-3"
-              placeholder="Correct Answer"
-              value={newQuestion.answer}
-              onChange={(e) =>
-                setNewQuestion({ ...newQuestion, answer: e.target.value })
-              }
-              style={{...styles.input, borderColor: currentTheme.colors.secondaryAccent}}
-            />
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Correct Answer *</label>
+              <input
+                type="text"
+                className={styles.formInput}
+                placeholder="Enter the correct answer"
+                value={newQuestion.answer}
+                onChange={(e) =>
+                  setNewQuestion({ ...newQuestion, answer: e.target.value })
+                }
+              />
+            </div>
             
             <button 
-              className="btn px-4 py-2 mt-2" 
+              className={styles.buttonSecondary}
               onClick={addQuestion}
-              style={styles.secondaryButton}
-              onMouseOver={commonStyles.buttonHoverEffect}
-              onMouseOut={commonStyles.buttonLeaveEffect}
             >
               + Add Question
             </button>
@@ -227,74 +173,60 @@ export default function CreateQuiz() {
         </div>
 
         {/* Display Added Questions */}
-        <div 
-          className="p-4 mb-4"
-          style={styles.yellowCard}
-        >
-          <h4 className="fw-bold mb-3">Added Questions</h4>
-          
-          {questions.length === 0 ? (
-            <p className="text-center p-4 fst-italic">No questions added yet.</p>
-          ) : (
-            <div className="list-group">
-              {questions.map((q, idx) => (
-                <div 
-                  key={idx} 
-                  className="mb-3 p-3 d-flex justify-content-between align-items-start"
-                  style={{
-                    border: currentTheme.borders.input,
-                    borderRadius: "16px",
-                    background: theme === "light" ? "#FFFFFF" : "#3A2C50",
-                    boxShadow: "3px 3px 0 #000"
-                  }}
-                >
-                  <div>
-                    <div className="d-flex align-items-center">
-                      <span style={styles.questionCounter}>
-                        {idx+1}
-                      </span>
-                      <span className="fw-bold">{q.question}</span>
-                    </div>
-                    <div className="mt-2 ms-4">
-                      <span 
-                        className="badge me-2" 
-                        style={{
-                          background: currentTheme.colors.secondaryAccent,
-                          color: "#000",
-                          border: "1px solid #000"
-                        }}
+        <div className={styles.mainCard}>
+          <div className={styles.cardContent}>
+            <h4 className={styles.sectionTitle}>Added Questions ({questions.length})</h4>
+            
+            {questions.length === 0 ? (
+              <div className={styles.noQuestions}>
+                <p className={styles.noQuestionsText}>No questions added yet. Add your first question above!</p>
+              </div>
+            ) : (
+              <div>
+                {questions.map((q, idx) => (
+                  <div key={idx} className={styles.questionCard}>
+                    <div className={styles.questionHeader}>
+                      <div className={styles.questionNumber}>
+                        {idx + 1}
+                      </div>
+                      <button 
+                        className={styles.buttonDanger}
+                        onClick={() => deleteQuestion(idx)}
                       >
-                        Answer
-                      </span>
-                      {q.answer}
+                        ✕ Delete
+                      </button>
                     </div>
+                    
+                    <div className={styles.questionText}>{q.question}</div>
+                    
+                    {q.options.some(opt => opt.trim()) && (
+                      <div>
+                        <div className={styles.correctAnswerLabel}>Options:</div>
+                        <ul className={styles.optionsList}>
+                          {q.options.filter(opt => opt.trim()).map((option, optIdx) => (
+                            <li key={optIdx} className={styles.optionItem}>
+                              {option}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    
+                    <div className={styles.correctAnswerLabel}>Correct Answer:</div>
+                    <div className={styles.correctAnswer}>{q.answer}</div>
                   </div>
-                  <button 
-                    className="btn btn-sm" 
-                    onClick={() => deleteQuestion(idx)}
-                    style={styles.dangerButton}
-                  >
-                    ✕ Delete
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Create Quiz Button */}
-        <div className="text-center">
+        <div className={styles.textCenter}>
           <button 
-            className="btn btn-lg px-5 py-2" 
+            className={`${styles.buttonPrimary} ${styles.buttonFullWidth}`}
             onClick={createQuiz}
             disabled={isCreating}
-            style={{
-              ...styles.primaryButton,
-              opacity: isCreating ? 0.7 : 1,
-              cursor: isCreating ? "not-allowed" : "pointer"
-            }}
-            onMouseOver={commonStyles.buttonHoverEffect}
-            onMouseOut={commonStyles.buttonLeaveEffect}
           >
             {isCreating ? "Creating..." : "✨ Create Quiz"}
           </button>

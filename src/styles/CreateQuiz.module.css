@@ -1,0 +1,360 @@
+/* CreateQuiz Page Styles */
+
+.pageContainer {
+  width: 100%;
+  padding: 40px 0;
+  background-color: var(--color-background);
+  min-height: calc(100vh - 136px);
+}
+
+.pageTitle {
+  text-align: center;
+  margin-bottom: 32px;
+  font-weight: bold;
+  font-size: 2.5rem;
+  color: var(--color-text);
+}
+
+.pageTitleAccent {
+  color: var(--color-primary-accent);
+  position: relative;
+}
+
+.titleUnderline {
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 3px;
+}
+
+.mainCard {
+  background-color: var(--color-card-background);
+  border: var(--border-standard);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 30px;
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sectionTitle {
+  font-weight: bold;
+  margin-bottom: 24px;
+  font-size: 1.5rem;
+  color: var(--color-text);
+}
+
+.formGroup {
+  margin-bottom: 24px;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+.formInput {
+  width: 100%;
+  border: var(--border-input);
+  border-radius: var(--radius-input);
+  padding: 12px 16px;
+  background-color: var(--color-input-background);
+  color: var(--color-text);
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: var(--color-primary-accent);
+}
+
+.formTextarea {
+  width: 100%;
+  border: var(--border-input);
+  border-radius: var(--radius-input);
+  padding: 12px 16px;
+  background-color: var(--color-input-background);
+  color: var(--color-text);
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 100px;
+  transition: border-color 0.2s;
+}
+
+.formTextarea:focus {
+  outline: none;
+  border-color: var(--color-primary-accent);
+}
+
+.questionCard {
+  background-color: var(--color-purple-background);
+  border: var(--border-standard);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.questionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.questionNumber {
+  background-color: var(--color-primary-accent);
+  color: #000;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border: 2px solid #000;
+}
+
+.questionText {
+  font-weight: bold;
+  color: var(--color-text);
+  margin-bottom: 12px;
+}
+
+.optionsList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px 0;
+}
+
+.optionItem {
+  padding: 8px 12px;
+  margin-bottom: 4px;
+  background-color: var(--color-card-background);
+  border: var(--border-thin);
+  border-radius: var(--radius-input);
+  color: var(--color-text);
+}
+
+.correctAnswer {
+  font-weight: bold;
+  color: var(--color-text);
+  padding: 8px 12px;
+  background-color: var(--color-yellow-background);
+  border: var(--border-thin);
+  border-radius: var(--radius-input);
+  margin-bottom: 12px;
+}
+
+.correctAnswerLabel {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  opacity: 0.8;
+  margin-bottom: 4px;
+}
+
+.buttonPrimary {
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-color);
+  border: var(--button-primary-border);
+  border-radius: var(--radius-button);
+  box-shadow: var(--shadow-button);
+  font-weight: bold;
+  padding: 12px 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.buttonPrimary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-button-hover);
+  text-decoration: none;
+  color: var(--button-primary-color);
+}
+
+.buttonPrimary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: var(--shadow-button);
+}
+
+.buttonSecondary {
+  background-color: var(--button-secondary-bg);
+  color: var(--button-secondary-color);
+  border: var(--button-secondary-border);
+  border-radius: var(--radius-button);
+  box-shadow: var(--shadow-button);
+  font-weight: bold;
+  padding: 12px 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.buttonSecondary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-button-hover);
+  text-decoration: none;
+  color: var(--button-secondary-color);
+}
+
+.buttonDanger {
+  background-color: var(--button-danger-bg);
+  color: var(--button-danger-color);
+  border: var(--button-danger-border);
+  border-radius: var(--radius-small-button);
+  box-shadow: var(--shadow-small-button);
+  font-weight: bold;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.buttonDanger:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow-small-button-hover);
+  text-decoration: none;
+  color: var(--button-danger-color);
+}
+
+.buttonFullWidth {
+  width: 100%;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.textCenter {
+  text-align: center;
+}
+
+.marginBottom2 {
+  margin-bottom: 16px;
+}
+
+.marginBottom3 {
+  margin-bottom: 24px;
+}
+
+.marginBottom4 {
+  margin-bottom: 32px;
+}
+
+.noQuestions {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: var(--color-yellow-background);
+  border: var(--border-standard);
+  border-radius: var(--radius-card);
+  margin-bottom: 24px;
+}
+
+.noQuestionsText {
+  color: var(--color-text);
+  font-size: 1.1rem;
+  margin-bottom: 0;
+}
+
+.optionsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.smallFormInput {
+  border: var(--border-input);
+  border-radius: var(--radius-input);
+  padding: 8px 12px;
+  background-color: var(--color-input-background);
+  color: var(--color-text);
+  font-size: 0.95rem;
+}
+
+.smallFormInput:focus {
+  outline: none;
+  border-color: var(--color-primary-accent);
+}
+
+/* Decorative elements */
+.decorativeCircle {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.mainCardDecorative1 {
+  top: -15px;
+  right: -15px;
+  width: 60px;
+  height: 60px;
+  background-color: var(--color-primary-accent);
+  opacity: 0.3;
+}
+
+.mainCardDecorative2 {
+  bottom: -20px;
+  left: -20px;
+  width: 80px;
+  height: 80px;
+  background-color: var(--color-secondary-accent);
+  opacity: 0.2;
+}
+
+.cardContent {
+  position: relative;
+  z-index: 2;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .pageTitle {
+    font-size: 2rem;
+    margin-bottom: 24px;
+  }
+  
+  .mainCard {
+    padding: 20px;
+    margin: 0 16px 32px 16px;
+  }
+  
+  .optionsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .buttonGroup {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .buttonPrimary,
+  .buttonSecondary {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+}

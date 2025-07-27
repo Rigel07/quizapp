@@ -1,0 +1,418 @@
+/* EditQuiz Component Styles */
+
+.pageContainer {
+  width: 100%;
+  padding: 40px 0;
+  background-color: var(--color-background);
+  min-height: 100vh;
+}
+
+.loadingCard {
+  background-color: var(--color-card-purple-background);
+  border: 4px solid #000;
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  position: relative;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 30px;
+}
+
+.loadingText {
+  color: var(--color-text);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Header Section */
+.headerCard {
+  background-color: var(--color-card-purple-background);
+  border: 4px solid #000;
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  position: relative;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 40px;
+}
+
+.decorativeCircle {
+  border-radius: 50%;
+  position: absolute;
+}
+
+.headerDecorative1 {
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background-color: var(--color-secondary-accent);
+  opacity: 0.5;
+}
+
+.headerDecorative2 {
+  bottom: 15px;
+  left: 15px;
+  width: 30px;
+  height: 30px;
+  background-color: var(--color-primary-accent);
+  opacity: 0.4;
+}
+
+.cardContent {
+  position: relative;
+  z-index: 2;
+}
+
+.pageTitle {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: var(--color-text);
+}
+
+.pageTitleAccent {
+  color: var(--color-secondary-accent);
+  font-style: italic;
+  display: inline;
+  margin-left: 10px;
+  position: relative;
+}
+
+.titleUnderline {
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  right: 0;
+}
+
+.pageSubtitle {
+  color: var(--color-text);
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+/* Section Cards */
+.sectionCard {
+  background-color: var(--color-card-pink-background);
+  border: 4px solid #000;
+  border-radius: 20px;
+  padding: 30px;
+  position: relative;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 30px;
+}
+
+.purpleCard {
+  background-color: var(--color-card-purple-background);
+  border: 4px solid #000;
+  border-radius: 20px;
+  padding: 30px;
+  position: relative;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 30px;
+}
+
+.yellowCard {
+  background-color: var(--color-card-yellow-background);
+  border: 4px solid #000;
+  border-radius: 20px;
+  padding: 30px;
+  position: relative;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 30px;
+}
+
+.sectionDecorative {
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background-color: #C2A9FA;
+  opacity: 0.5;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: var(--color-text);
+}
+
+/* Form Elements */
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formLabel {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--color-text);
+}
+
+.formInput {
+  width: 100%;
+  padding: 12px 16px;
+  border: var(--border-input);
+  border-radius: 12px;
+  background-color: var(--color-input-background);
+  color: var(--color-text);
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: var(--color-primary-accent);
+  box-shadow: 0 0 0 3px rgba(198, 169, 250, 0.3);
+}
+
+.formTextarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: var(--border-input);
+  border-radius: 12px;
+  background-color: var(--color-input-background);
+  color: var(--color-text);
+  font-size: 1rem;
+  min-height: 100px;
+  resize: vertical;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.formTextarea:focus {
+  outline: none;
+  border-color: var(--color-primary-accent);
+  box-shadow: 0 0 0 3px rgba(198, 169, 250, 0.3);
+}
+
+.optionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.smallFormInput {
+  padding: 10px 14px;
+  border: var(--border-input);
+  border-radius: 10px;
+  background-color: var(--color-input-background);
+  color: var(--color-text);
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.smallFormInput:focus {
+  outline: none;
+  border-color: var(--color-primary-accent);
+  box-shadow: 0 0 0 3px rgba(198, 169, 250, 0.3);
+}
+
+/* Buttons */
+.buttonPrimary {
+  background-color: var(--color-button-primary-background);
+  border: 3px solid #000;
+  border-radius: 15px;
+  padding: 12px 24px;
+  color: var(--color-button-primary-text);
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.buttonPrimary:hover {
+  background-color: var(--color-button-primary-hover);
+  color: var(--color-button-primary-text);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0px #000000;
+  text-decoration: none;
+}
+
+.buttonPrimary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.buttonSecondary {
+  background-color: var(--color-button-secondary-background);
+  border: 3px solid #000;
+  border-radius: 15px;
+  padding: 10px 20px;
+  color: var(--color-text);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.buttonSecondary:hover {
+  background-color: var(--color-button-secondary-hover);
+  color: var(--color-text);
+  transform: translate(-2px, -2px);
+  box-shadow: 3px 3px 0px #000000;
+  text-decoration: none;
+}
+
+.buttonDanger {
+  background-color: var(--color-button-danger-background);
+  border: 3px solid #000;
+  border-radius: 12px;
+  padding: 8px 16px;
+  color: var(--color-button-danger-text);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.buttonDanger:hover {
+  background-color: var(--color-button-danger-hover);
+  color: var(--color-button-danger-text);
+  transform: translate(-1px, -1px);
+  box-shadow: 2px 2px 0px #000000;
+}
+
+/* Question Display */
+.questionCard {
+  border: var(--border-input);
+  border-radius: 16px;
+  background-color: var(--color-input-background);
+  box-shadow: 3px 3px 0 #000;
+  margin-bottom: 20px;
+  padding: 20px;
+}
+
+.questionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.questionNumber {
+  background-color: var(--color-primary-accent);
+  border: 2px solid #000;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #000;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.questionText {
+  color: var(--color-text);
+  font-weight: 600;
+  line-height: 1.4;
+  flex-grow: 1;
+}
+
+.answerBadge {
+  background-color: var(--color-secondary-accent);
+  color: #000;
+  border: 1px solid #000;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-right: 10px;
+  display: inline-block;
+}
+
+.answerText {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+/* Empty State */
+.noQuestions {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.noQuestionsText {
+  color: var(--color-text);
+  font-style: italic;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Utility Classes */
+.textCenter {
+  text-align: center;
+}
+
+.marginBottom2 {
+  margin-bottom: 20px;
+}
+
+.buttonFullWidth {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  display: block;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .pageContainer {
+    padding: 20px 0;
+  }
+  
+  .headerCard,
+  .sectionCard,
+  .purpleCard,
+  .yellowCard {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .pageTitle {
+    font-size: 2rem;
+  }
+  
+  .optionsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .questionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .questionNumber {
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .pageTitle {
+    font-size: 1.75rem;
+  }
+  
+  .headerCard,
+  .sectionCard,
+  .purpleCard,
+  .yellowCard {
+    padding: 15px;
+  }
+  
+  .buttonPrimary,
+  .buttonSecondary {
+    width: 100%;
+    text-align: center;
+  }
+}

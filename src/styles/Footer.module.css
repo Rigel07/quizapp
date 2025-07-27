@@ -1,0 +1,25 @@
+/* Footer Component Styles */
+
+.footer {
+  background-color: var(--color-background);
+  border-top: 4px solid #000;
+  color: var(--color-text);
+  position: relative;
+  z-index: 10;
+  padding: 16px 0;
+}
+
+.container {
+  text-align: center;
+}
+
+.copyright {
+  display: inline-block;
+  padding: 8px 25px;
+  border-radius: 30px;
+  background-color: var(--color-purple-background);
+  border: var(--border-standard);
+  box-shadow: var(--shadow-small-button);
+  font-weight: bold;
+  color: var(--color-text);
+}
