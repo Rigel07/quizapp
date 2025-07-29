@@ -1,6 +1,7 @@
 # Quiz App - Interactive Quiz Platform
 
 A modern, responsive quiz application built with React that allows users to create, manage, and take interactive quizzes with real-time scoring and user authentication.
+Check it out here: https://quizapp-three-nu.vercel.app/
 
 ## ✨ Features
 
@@ -25,10 +26,6 @@ A modern, responsive quiz application built with React that allows users to crea
 - **Route Protection**: Private routes for authenticated users
 - **Error Handling**: Comprehensive error handling and user feedback
 - **Hot Module Replacement**: Fast development with Vite HMR
-
-## 📱 Screenshots
-
-*Screenshots and demo links will be added here*
 
 ## 🛠️ Tech Stack
 
